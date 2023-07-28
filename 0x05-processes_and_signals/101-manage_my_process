@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-#Bash script that creates a subprocess
-. /lib/lsb/init-functions
+# Bash script that creates a subprocess
 
+# Define the PIDFILE path
 PIDFILE=/var/run/my_process.pid
 
 start() {
@@ -13,19 +13,41 @@ stop() {
     sudo kill -15 "$(cat "$PIDFILE")" && rm -f "$PIDFILE"
 }
 
-case "$1" in 
+# Define the LSB functions directly in the script
+# Instead of using ". /lib/lsb/init-functions"
+log_success_msg() {
+    echo "Success: $*"
+}
+
+log_failure_msg() {
+    echo "Failure: $*"
+}
+
+log_warning_msg() {
+    echo "Warning: $*"
+}
+
+log_action_begin_msg() {
+    echo "Starting $*..."
+}
+
+log_action_end_msg() {
+    echo "done."
+}
+
+case "$1" in
     start)
        start
-       echo "manage_my_process started"
+       log_success_msg "manage_my_process started"
        ;;
     stop)
        stop
-       echo "manage_my_process stopped"
+       log_success_msg "manage_my_process stopped"
        ;;
     restart)
        stop
        start
-       echo "manage_my_process restarted"
+       log_success_msg "manage_my_process restarted"
        ;;
     *)
        echo "Usage: manage_my_process {start|stop|restart}"
