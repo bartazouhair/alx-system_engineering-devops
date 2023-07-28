@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-#Writes a message to a file
-while :
-do
-	echo "I am alive!" >> /tmp/my_process
-	sleep 2
+# Indefinitely writes "I am alive!" to a file
+
+NAME=/tmp/my_process
+sudo touch $NAME
+
+while true; do
+    sudo bash -c "echo \"I am alive!\" >> $NAME"
+    sleep 2
 done
