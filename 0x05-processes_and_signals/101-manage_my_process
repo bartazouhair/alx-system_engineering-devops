@@ -1,30 +1,45 @@
-#!/usr/bin/env bash
-# Manages the program called manage_my_process
+#!/bin/bash
 
-FILE="/var/run/my_process.pid"
+PID_FILE="/var/run/my_process.pid"
+PROCESS_NAME="manage_my_process"
 
-create()
-{
-    sudo touch $FILE
-    sudo bash -c "echo $$ > $FILE"
+start_process() {
+  if [ -f "$PID_FILE" ]; then
+    echo "$PROCESS_NAME is already started."
+  else
+    echo $$ > "$PID_FILE"
+    echo "$PROCESS_NAME started"
+    ./manage_my_process
+  fi
 }
 
-if [ "$1" == "start" ]; then
-    create
-    ./manage_my_process &
-    echo "manage_my_process started"
+stop_process() {
+  if [ -f "$PID_FILE" ]; then
+    kill "$(cat "$PID_FILE")"
+    rm "$PID_FILE"
+    echo "$PROCESS_NAME stopped"
+  else
+    echo "$PROCESS_NAME is not running."
+  fi
+}
 
-elif [ "$1" == "stop" ]
-then
-    [ -e "/var/run/my_process.pid" ] && sudo pkill -f "./manage_my_process" && rm /var/run/my_process.pid
-    echo "manage_my_process stopped"
+restart_process() {
+  stop_process
+  start_process
+  echo "$PROCESS_NAME restarted"
+}
 
-elif [ "$1" == "restart" ]
-then
-    $0 stop >& /dev/null
-    $0 start >& /dev/null
-    echo "manage_my_process restarted"
-
-else
-    echo "Usage: manage_my_process {start|stop|restart}"
-fi
+case $1 in
+  start)
+    start_process
+    ;;
+  stop)
+    stop_process
+    ;;
+  restart)
+    restart_process
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    ;;
+esac
