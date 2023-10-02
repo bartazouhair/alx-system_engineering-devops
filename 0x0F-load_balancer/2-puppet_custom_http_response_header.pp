@@ -1,4 +1,4 @@
-# configures an ubuntu server using puppet as follows:
+# configures ubuntu servers by puppet as follows:
 #	- apt-get update
 #	- apt-get install nginx
 #	- set X-Served-By -> $HOSTNAME
