@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # Install nginx and add a custom header
+
+
 apt-get update
 apt-get -y install nginx
+
 ufw allow 'Nginx HTTP'
 echo "Holberton School" > /var/www/html/index.nginx-debian.html
 echo "Ceci n'est pas une page" > /usr/share/nginx/html/custom_404.html
