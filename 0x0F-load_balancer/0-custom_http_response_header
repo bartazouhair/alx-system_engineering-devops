@@ -1,54 +1,9 @@
 #!/usr/bin/env bash
-# Installs HAProxy version 1.8
-
-add apt-get -y upgrade
-apt-get update
-apt-get install -y software-properties-common
-
-# Add the HAProxy repository (if available for your Ubuntu version)
-add-apt-repository -y ppa:vbernat/haproxy-2.0
-apt-get update
-
-# Install HAProxy  (specify a valid version if available)
-apt-get install -y haproxy=2.0\*   
-
-# Create the HAProxy configuration directory and file
-mkdir -p /etc/haproxy
-touch /etc/haproxy/haproxy.cfg
-
-# Configure HAProxy
-cat <<EOL > /etc/haproxy/haproxy.cfg
-global
-    log 127.0.0.1 local0 notice
-    maxconn 2000
-    user haproxy
-    group haproxy
-
-defaults
-    log     global
-    mode    http
-    option  httplog
-    option  dontlognull
-    retries 3
-    option redispatch
-    timeout connect  5000
-    timeout client  10000
-    timeout server  10000
-
-listen hbnb
-    bind 0.0.0.0:80
-    mode http
-    stats enable
-    stats uri /haproxy?stats
-    balance roundrobin
-    option httpclose
-    option forwardfor
-    server 393135-web-02 54.237.44.106:80 check
-    server 393135-web-01 3.85.148.98:80 check
-EOL
-
-# Start the HAProxy service
-systemctl start haproxy
-
-# Enable HAProxy to start on boot
-systemctl enable haproxy
+# Configures a new Ubuntu server with a custom HTTP header response
+apt-get -y update
+apt-get -y install nginx
+ufw allow 'Nginx HTTP'
+echo 'Hello World!' > /var/www/html/index.html
+sed -i '/listen 80 default_server;/a rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
+sed -i '/listen 80 default_server;/a add_header X-Served-By $hostname;' /etc/nginx/sites-available/default
+service nginx start
