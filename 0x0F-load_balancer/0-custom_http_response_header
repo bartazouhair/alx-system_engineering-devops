@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
-# Configure Nginx so that return the hostname of the server Nginx is running on
+# Configure Nginx to return the hostname of the server Nginx is running on
 
 sudo apt-get -y update
 sudo apt-get -y install nginx
+
+# Get the hostname and save it in a variable
+HOSTNAME=$(hostname)
+
+# Add the custom header with the hostname
 sudo sed -i "48i\\\tadd_header X-Served-By \"$HOSTNAME\";\n" /etc/nginx/sites-available/default
+
+# Create sample HTML files
 echo "Hello World!" | sudo tee /var/www/html/index.html
-echo "Ceci n'est pas une page" | sudo tee /var/www/html/404.html
+echo "This is not a page" | sudo tee /var/www/html/404.html
+
 sudo service nginx start
