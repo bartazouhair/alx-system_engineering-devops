@@ -51,8 +51,5 @@ backend www-backend
     server web-02 [34.229.189.89]-web-02:80 check
 EOL
 
-# Vérifiez la configuration de HAproxy
-sudo haproxy -c -f /etc/haproxy/haproxy.cfg
-
 # Redémarrez HAproxy
-sudo systemctl restart haproxy
+sudo service haproxy restart
