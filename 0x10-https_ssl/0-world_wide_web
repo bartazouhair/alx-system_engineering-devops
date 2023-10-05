@@ -1,34 +1,22 @@
 #!/usr/bin/env bash
+# A script that displays domain dns informations for a domain
+domaininfo () {
+	answer_section=$(dig "$1" | grep -A1 'ANSWER SECTION' | tail -n 1)
 
-# Function to get DNS information
-get_dns_info() {
-    domain=$1
-    subdomain=$2
-    dig_output=$(dig $subdomain.$domain | grep -A1 'ANSWER SECTION:')
-    record_type=$(echo "$dig_output" | awk '/IN\s+[A-Z]+/ {print $4}')
-    destination=$(echo "$dig_output" | awk '/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/ {print $5}')
-    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+	subdomain=$(echo "$answer_section" | awk '{print $1;}' FS=.) 
+	record_type=$(echo "$answer_section" | awk '{print $4;}')
+	ip_address=$(echo "$answer_section" | awk '{print $5}')
+
+	echo "The subdomain $subdomain is a $record_type record and points to $ip_address" 
 }
 
-# Main function
-main() {
-    domain=$1
-    subdomains=("www" "lb-01" "web-01" "web-02")
-
-    if [ -z $2 ]; then
-        for subdomain in "${subdomains[@]}"; do
-            get_dns_info $domain $subdomain
-        done
-    else
-        get_dns_info $domain $2
-    fi
-}
-
-# Check for correct number of arguments
-if [ $# -lt 1 ]; then
-    echo "Usage: $0 <domain> [subdomain]"
-    exit 1
+if [ $# -eq 1 ]
+then
+	domaininfo "www.$1" 
+	domaininfo "lb-01.$1"
+	domaininfo "web-01.$1"
+	domaininfo "web-02.$1"
+elif [ $# -eq 2 ]
+then
+	domaininfo "$2.$1"
 fi
-
-# Call the main function
-main $1 $2
