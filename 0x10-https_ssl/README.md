@@ -5,7 +5,7 @@ The goal of this project was to learn more about HTTPS SSL and its roles, what t
 
 ## Requirements
 ### Shell Scripts
-* Allowed editors: `vi`, `vim`, `emacs`
+* Allowed editors: `vi`, `vim`, `emacs`, 
 * All your scripts will be tested on Ubuntu 14.04 LTS
 * All your files should end with a new line
 * The first line of all your files should be exactly `#!/usr/bin/env bash`
