@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+# Function to get DNS information
+get_dns_info() {
+    domain=$1
+    subdomain=$2
+    dig_output=$(dig $subdomain.$domain | grep -A1 'ANSWER SECTION:')
+    record_type=$(echo "$dig_output" | awk '/IN\s+[A-Z]+/ {print $4}')
+    destination=$(echo "$dig_output" | awk '/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+/ {print $5}')
+    echo "The subdomain $subdomain is a $record_type record and points to $destination"
+}
+
+# Main function
+main() {
+    domain=$1
+    subdomains=("www" "lb-01" "web-01" "web-02")
+
+    if [ -z $2 ]; then
+        for subdomain in "${subdomains[@]}"; do
+            get_dns_info $domain $subdomain
+        done
+    else
+        get_dns_info $domain $2
+    fi
+}
+
+# Check for correct number of arguments
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <domain> [subdomain]"
+    exit 1
+fi
+
+# Call the main function
+main $1 $2
