@@ -1,22 +1,8 @@
 #!/usr/bin/env bash
-# Script description: Ce script génère une sauvegarde MySQL et crée une archive compressée à partir de celle-ci.
+# Backs up all SQL databases in a dump and packages them in an archive
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <mysql_password>"
-    exit 1
-fi
+# Backups SQL databases in a dump
+mysqldump -uroot -p'$1' --all-databases > backup.sql
 
-# Variables
-MYSQL_PASSWORD=$1
-DATE=$(date +"%d-%m-%Y")
-
-# Export MySQL databases
-mysqldump -u root -p"${MYSQL_PASSWORD}" --all-databases > backup.sql
-
-# Create compressed archive
-tar -czf "${DATE}.tar.gz" backup.sql
-
-# Clean up
-rm backup.sql
-
-echo "Backup completed successfully!"
+# Packages the backup dump into a .tar.gz
+sudo tar -cvzf $(date +"%d-%m-%y").tar.gz backup.sql
