@@ -1,11 +1,9 @@
 #!/usr/bin/python3
-"""Module for task 3"""
+"""Module Done"""
 
 
 def count_words(subreddit, word_list, word_count={}, after=None):
-    """Queries the Reddit API and returns the count of words in
-    word_list in the titles of all the hot posts
-    of the subreddit"""
+    """Queries Reddit API the subreddit"""
     import requests
 
     sub_info = requests.get("https://www.reddit.com/r/{}/hot.json"
